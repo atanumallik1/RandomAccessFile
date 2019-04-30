@@ -3,7 +3,7 @@ package file.db;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class PartsDB {
+public class PartsDB  {
 	public final static int PNUMLEN = 20;
 	public final static int DESCLEN = 30;
 	public final static int QUANLEN = 4;

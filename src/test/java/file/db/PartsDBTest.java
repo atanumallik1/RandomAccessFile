@@ -2,14 +2,39 @@ package file.db;
 
 import java.io.IOException;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class PartsDBTest {
-	@Test
-	public void testDB() {
-		PartsDB pdb = null;
+	PartsDB pdb = null;
+
+	@Before
+	public void startDB() {
 		try {
 			pdb = new PartsDB("parts.db");
+
+		} catch (Exception ex) {
+			System.err.println(ex.getMessage());
+			Assert.fail("Unexpected Error");
+		}
+	}
+
+	@After
+	public void stopDB() {
+		try {
+			pdb.close();
+
+		} catch (Exception ex) {
+			System.err.println(ex.getMessage());
+		}
+	}
+
+	@Test
+	public void testDB() {
+
+		try {
 			if (pdb.numRecs() == 0) {
 				// Populate the database with records.
 				pdb.append("1-9009-3323-4x", "Wiper Blade Micro Edge", 30, 2468);
@@ -21,12 +46,18 @@ public class PartsDBTest {
 			dumpRecords(pdb);
 			pdb.update(1, "1-3233-44923-7j", "Parking Brake Cable", 5, 1995);
 			dumpRecords(pdb);
-		} catch (IOException ioe) {
-			System.err.println(ioe);
-		} finally {
-			if (pdb != null)
-				pdb.close();
+			
+			Assert.assertEquals(   "Parking Brake Cable",pdb.select(1).getDesc());
+			Assert.assertEquals(   9,pdb.select(4).getQty());
+			Assert.assertEquals(   "Air Pump Electric",pdb.select(4).getDesc());
+			 
+			
+			
+		} catch (Exception ex) {
+			System.err.println(ex.getMessage());
+			Assert.fail("Unexpected Error");
 		}
+
 	}
 
 	static void dumpRecords(PartsDB pdb) throws IOException {
